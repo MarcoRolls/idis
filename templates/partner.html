@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Информация о договоре</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+  {% set active_tab = 'partners' %}
+  {% include 'header.html' %}
+
+  <div class="content">
+    <div class="container" style="color:black;">
+      <div class="form-container">
+        <h1 style="text-align: center;"><font size="6">Информация о договоре</font></h1>
+         <form action="/partner/{{ partner['_id'] }}/edit" method="POST" enctype="multipart/form-data" id="yourFormId">
+          <div class="form-group">
+            <label for="date">Компания:</label>
+            <input type="text" id="date" name="company" value="{{ partner['company'] }}" required form="yourFormId">
+          </div>
+          <div class="form-group">
+            <label for="name">Имя:</label>
+            <input type="text" id="name" name="name" value="{{ partner['name'] }}" required form="yourFormId">
+          </div>
+          <div class="form-group">
+            <label for="surname">Фамилия:</label>
+            <input type="text" id="surname" name="surname" value="{{ partner['surname'] }}" required form="yourFormId">
+          </div>
+          <div class="form-group">
+            <label for="telephone">Телефон:</label>
+            <input type="tel" id="telephone" name="telephone" value="{{ partner['telephone'] }}" required form="yourFormId">
+          </div>
+          <div id="hidden-documents-container"></div> <!-- Контейнер для скрытых полей документов -->
+          <input type="hidden" name="new_documents" id="new-documents" form="yourFormId">
+          <input type="hidden" name="existing_documents" id="existing-documents" form="yourFormId">
+        </form>
+          <h2>Продукты</h2>
+        <div class="add-button">
+          <button onclick="openModal()">Сколько (1 или много)(Узнать у заказчика)?</button>
+        </div>
+        <h3>Новые</h3>
+        <div id="new-product-container" class="new-product-container"></div>
+        <hr>
+        <h3>Существующие</h3>
+        <hr color="black">
+        <h2>Договоры</h2>
+        <div class="add-button">
+          <button onclick="openModal()">Сколько (1 или много)(Узнать у заказчика)?</button>
+        </div>
+        <h3>Новые</h3>
+        <div id="new-documents-container" class="new-document-container"></div>
+        <hr>
+        <h3>Существующие</h3>
+
+
+        <div class="form-group">
+          <button type="submit" form="yourFormId" onclick="prepareDocuments()">Сохранить</button>
+        </div>
+        <form action="/partner/{{ partner['_id'] }}/remove" method="POST" class="delete-form_partner" onsubmit="return confirmDelete()">
+          <button type="submit" class="delete-button" style="margin-top:-65px">Удалить партнёра</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно -->
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Загрузка договор</h2>
+      <form id="uploadForm" enctype="multipart/form-data">
+        <label for="type_documents">Тип договора:</label>
+        <input type="text" id="type_documents" name="type_documents" required><br><br>
+        <label for="document">Договор:</label>
+        <input type="file" id="document" name="document" required><br><br>
+        <input type="submit" value="Загрузить">
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно подтверждения удаления -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <h2>Вы точно хотите удалить договор?</h2>
+      <div class="button-container">
+        <button class="confirm-button" onclick="deleteEmployee()">Да</button>
+        <button class="cancel-button" onclick="closeDeleteModal()">Нет</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/script_partners.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Информация о договоре</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+  {% set active_tab = 'contracts' %}
+  {% include 'header.html' %}
+
+  <div class="content">
+    <div class="container" style="color:black;">
+      <div class="form-container">
+        <h1 style="text-align: center;"><font size="6">Информация о договоре</font></h1>
+         <form action="/contract/{{ contract['_id'] }}/edit" method="POST" enctype="multipart/form-data" id="yourFormId">
+          <div class="form-group">
+            <label for="contractNumber">Номер договора:</label>
+            <input type="text" id="contractNumber" name="contractNumber" value="{{ contract['contractNumber'] }}" required form="yourFormId">
+          </div>
+          <div class="form-group">
+            <label for="date">Дата:</label>
+            <input type="text" id="date" name="date" value="{{ contract['date'] }}" required form="yourFormId">
+          </div>
+          <div class="form-group">
+            <label for="amount">Сумма:</label>
+            <input type="text" id="amount" name="amount" value="{{ contract['amount'] }}" required form="yourFormId">
+          </div>
+          <div class="form-group">
+            <label for="customer">Заказчик:</label>
+            <input type="text" id="customer" name="customer" value="{{ contract['customer'] }}" required form="yourFormId">
+          </div>
+          <div class="form-group">
+            <label for="workType">Вид работы:</label>
+            <input type="text" id="workType" name="workType" value="{{ contract['workType'] }}" required form="yourFormId">
+          </div>
+          <div class="form-group">
+            <label for="workTypeName">Название вида:</label>
+            <input type="text" id="workTypeName" name="workTypeName" value="{{ contract['workTypeName'] }}" required form="yourFormId">
+          </div>
+          <div id="hidden-documents-container"></div> <!-- Контейнер для скрытых полей документов -->
+          <input type="hidden" name="new_documents" id="new-documents" form="yourFormId">
+          <input type="hidden" name="existing_documents" id="existing-documents" form="yourFormId">
+        </form>
+
+        <h2>Договоры</h2>
+        <div class="add-button">
+          <button onclick="openModal()">Сколько (1 или много)(Узнать у заказчика)?</button>
+        </div>
+        <h3>Новые</h3>
+        <div id="new-documents-container" class="new-document-container"></div>
+        <hr>
+        <h3>Существующие</h3>
+
+
+        <div class="form-group">
+          <button type="submit" form="yourFormId" onclick="prepareDocuments()">Сохранить</button>
+        </div>
+        <form action="/contract/{{ contract['_id'] }}/remove" method="POST" class="delete-form_contract" onsubmit="return confirmDelete()">
+          <button type="submit" class="delete-button" style="margin-top:-65px">Удалить договор</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно -->
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Загрузка договор</h2>
+      <form id="uploadForm" enctype="multipart/form-data">
+        <label for="type_documents">Тип договора:</label>
+        <input type="text" id="type_documents" name="type_documents" required><br><br>
+        <label for="document">Договор:</label>
+        <input type="file" id="document" name="document" required><br><br>
+        <input type="submit" value="Загрузить">
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно подтверждения удаления -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <h2>Вы точно хотите удалить договор?</h2>
+      <div class="button-container">
+        <button class="confirm-button" onclick="deleteEmployee()">Да</button>
+        <button class="cancel-button" onclick="closeDeleteModal()">Нет</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/script_contracts.js') }}"></script>
+</body>
+</html>

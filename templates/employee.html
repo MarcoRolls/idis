@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Информация о пользователе</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+  {% set active_tab = 'employees' %}
+  {% include 'header.html' %}
+
+  <div class="content">
+    <div class="container" style="color:black;">
+      <div class="form-container">
+        <h1 style="text-align: center;"><font size="6">Информация о сотруднике</font></h1>
+        <form action="/user/{{ user['_id'] }}/edit" method="POST" enctype="multipart/form-data" id="yourFormId">
+          <div class="form-group">
+            <label for="name">Имя:</label>
+            <input type="text" id="name" name="name" value="{{ user['name'] }}" required form="yourFormId">
+          </div>
+          <div class="form-group">
+            <label for="surname">Фамилия:</label>
+            <input type="text" id="surname" name="surname" value="{{ user['surname'] }}" required form="yourFormId">
+          </div>
+          <div class="form-group">
+            <label for="telephone">Телефон:</label>
+            <input type="tel" id="telephone" name="telephone" value="{{ user['telephone'] }}" required form="yourFormId">
+          </div>
+          <div class="form-group">
+            <label for="mail">Email:</label>
+            <input type="email" id="mail" name="mail" value="{{ user['mail'] }}" required form="yourFormId">
+          </div>
+          <div id="hidden-documents-container"></div> <!-- Контейнер для скрытых полей документов -->
+          <input type="hidden" name="new_documents" id="new-documents" form="yourFormId">
+          <input type="hidden" name="existing_documents" id="existing-documents" form="yourFormId">
+        </form>
+
+        <h2>Документы</h2>
+        <div class="add-button">
+          <button onclick="openModal()">Добавить документ</button>
+        </div>
+        <h3>Новые</h3>
+        <div id="new-documents-container" class="new-document-container"></div>
+        <hr>
+        <h3>Существующие</h3>
+        <div class="document-cards" id="existing-documents-container">
+          {% if user['documents'] %}
+            {% for document in user['documents'] %}
+              <div class="document-card">
+                <h3>{{ document['type_documents'] }}</h3>
+                <img src="{{ document['document'] }}" alt="Документ">
+                <form class="delete-form">
+                    <!-- Может быть не нужны -->
+                  <input type="hidden" name="type_documents" value="{{ document['type_documents'] }}">
+                  <input type="hidden" name="document" value="{{ document['document'] }}">
+                    <!-- Может быть не нужны -->
+                  <button type="button" class="delete-button" onclick="deleteExistingDocument(this)">Удалить</button>
+                </form>
+              </div>
+            {% endfor %}
+          {% else %}
+            <p>Нет доступных документов.</p>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <button type="submit" form="yourFormId" onclick="prepareDocuments()">Сохранить</button>
+        </div>
+        <form action="/user/{{ user['_id'] }}/remove" method="POST" class="delete-form_user" onsubmit="return confirmDelete()">
+          <button type="submit" class="delete-button" style="margin-top:-65px">Удалить сотрудника</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно -->
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Загрузка документа</h2>
+      <form id="uploadForm" enctype="multipart/form-data">
+        <label for="type_documents">Тип документа:</label>
+        <input type="text" id="type_documents" name="type_documents" required><br><br>
+        <label for="document">Документ:</label>
+        <input type="file" id="document" name="document" required><br><br>
+        <input type="submit" value="Загрузить">
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно подтверждения удаления -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <h2>Вы точно хотите удалить сотрудника?</h2>
+      <div class="button-container">
+        <button class="confirm-button" onclick="deleteEmployee()">Да</button>
+        <button class="cancel-button" onclick="closeDeleteModal()">Нет</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/script_employees.js') }}"></script>
+</body>
+</html>

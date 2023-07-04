@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Главная</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    {% set active_tab = 'contracts' %}
+    {% include 'header.html' %}
+
+  <div class="content">
+    <div class="container" style="color:black;">
+      <div class="form-container">
+         <h1 style="text-align: center;"><font size="6">Договоры</font></h1>
+        <br>
+          <div class="add-button">
+          <button onclick="openModal()">Добавить договор</button>
+        </div>
+        <div class="card-container">
+          {% for contract in contracts %}
+          <div class="card" onclick="location.href='/contract/{{ contract['_id'] }}';">
+            <h1 style="text-align: justify;"><font size="5">№:{{ contract['contractNumber'] }}   Дата: {{ contract['date'] }}</font></h1>
+              <p>- Заказчик: {{ contract['customer'] }}</p>
+
+          </div>
+          {% endfor %}
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Модальное окно -->
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>Добавить договор</h2>
+    <form id="ContractFrom">
+      <input type="text" id="contractNumberInput" placeholder="Номер договора">
+      <input type="date" id="dateInput" placeholder="Дата">
+      <input type="text" id="amountInput" placeholder="Сумма">
+      <input type="text" id="customerInput" placeholder="Заказчик">
+      <input type="text" id="workTypeInput" placeholder="Вид работы">
+      <input type="text" id="workTypeNameInput" placeholder="Название вида">
+      <button type="button" onclick="addContract()">Добавить</button>
+    </form>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/script_contracts.js') }}"></script>
+</body>
+</html>
